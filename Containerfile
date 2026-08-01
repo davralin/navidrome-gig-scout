@@ -1,8 +1,31 @@
-FROM gcr.io/distroless/static-debian12:nonroot@sha256:f5b485ea962d9bd1186b2f6b3a061191539b905b82ec395de78cbfae51f20e35
+FROM ghcr.io/astral-sh/uv:0.11.7@sha256:240fb85ab0f263ef12f492d8476aa3a2e4e1e333f7d67fbdd923d00a506a516a AS uv
+FROM docker.io/library/python:3.14-slim@sha256:cea0e6040540fb2b965b6e7fb5ffa00871e632eef63719f0ea54bca189ce14a6
 
-LABEL org.opencontainers.image.title="repo-operations"
-LABEL org.opencontainers.image.description="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+LABEL org.opencontainers.image.title="navidrome-gig-scout"
+LABEL org.opencontainers.image.description="Notify when Navidrome artists have nearby Ticketmaster concerts."
+
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+ENV UV_PROJECT_ENVIRONMENT=/app/.venv
+
+COPY --from=uv /uv /usr/local/bin/uv
+
+WORKDIR /app
+
+RUN groupadd --gid 1000 app \
+    && useradd --uid 1000 --gid app --home-dir /home/app --create-home --shell /usr/sbin/nologin app \
+    && mkdir -p /data \
+    && chown -R app:app /app /data
+
+COPY --chown=app:app pyproject.toml uv.lock README.md ./
+COPY --chown=app:app src ./src
+
+RUN uv sync --frozen --no-dev --no-editable \
+    && find /app -type d -name __pycache__ -prune -exec rm -rf {} + \
+    && chown -R app:app /app
 
 HEALTHCHECK NONE
 
-USER nonroot:nonroot
+USER app:app
+
+ENTRYPOINT ["/app/.venv/bin/gig-scout"]

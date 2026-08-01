@@ -1,0 +1,47 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "navidrome-gig-scout"
+version = "0.1.0"
+description = "Notify when Navidrome artists have nearby Ticketmaster concerts."
+readme = "README.md"
+requires-python = ">=3.14"
+license = { text = "MIT" }
+dependencies = [
+  "apprise>=1.9.5",
+  "requests>=2.32.5",
+]
+
+[project.scripts]
+gig-scout = "navidrome_gig_scout.__main__:main"
+
+[dependency-groups]
+dev = [
+  "mypy>=1.18.2",
+  "pytest>=8.4.2",
+  "ruff>=0.14.8",
+  "types-requests>=2.32.4.20250913",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/navidrome_gig_scout"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py314"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP"]
+
+[tool.mypy]
+python_version = "3.14"
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["apprise"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

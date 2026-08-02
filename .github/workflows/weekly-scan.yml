@@ -52,6 +52,7 @@ jobs:
           fail-build: false
           severity-cutoff: high
           output-format: sarif
+          only-fixed: true
 
       - name: Upload Grype SARIF
         if: always()

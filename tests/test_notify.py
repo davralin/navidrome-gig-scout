@@ -14,11 +14,10 @@ def test_build_notification_contains_concert_details() -> None:
         url="https://ticket.example.test",
     )
 
-    notification = build_notification("Alestorm", event, "London")
+    notification = build_notification("Alestorm", event)
 
     assert notification.title == "Concert match: Alestorm"
     assert "Artist: Alestorm" in notification.body
     assert "Venue: O2 Forum Kentish Town" in notification.body
     assert "Date: 2027-01-30T19:00:00Z" in notification.body
-    assert "Search area: London" in notification.body
     assert "Tickets: https://ticket.example.test" in notification.body

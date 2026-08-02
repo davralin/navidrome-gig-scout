@@ -16,7 +16,7 @@ class Notification:
     body: str
 
 
-def build_notification(artist: str, event: Event, search_place: str) -> Notification:
+def build_notification(artist: str, event: Event) -> Notification:
     return Notification(
         title=f"Concert match: {artist}",
         body="\n".join(
@@ -24,7 +24,6 @@ def build_notification(artist: str, event: Event, search_place: str) -> Notifica
                 f"Artist: {artist}",
                 f"Venue: {event.venue}",
                 f"Date: {event.date}",
-                f"Search area: {search_place}",
                 f"Tickets: {event.url}",
             ]
         ),

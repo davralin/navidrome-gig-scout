@@ -1,7 +1,7 @@
 # Navidrome Gig Scout
 
 `navidrome-gig-scout` checks the artists in a Navidrome library against the
-Ticketmaster Discovery API and sends Apprise notifications for new exact artist matches.
+Ticketmaster Discovery API and sends Apprise notifications for exact artist matches.
 
 The program runs once and exits. It is intended for local testing, containers, and later
 Kubernetes CronJob deployment.
@@ -34,13 +34,10 @@ Required environment variables:
 
 Optional environment variables:
 
-- `STATE_PATH`, default `/data/state.json`
 - `LOG_LEVEL`, default `INFO`
-- `SEARCH_PLACE`, default `<GEO_LAT>,<GEO_LONG>`
 
-The state file is a flat JSON object mapping Ticketmaster event IDs to the ISO timestamp when
-they were recorded. Losing it does not break the app, but matching future runs may notify again
-for events that were previously sent.
+There is no persistent deduplication state. A matching event will notify again on each future run
+while Ticketmaster continues returning it.
 
 ## Local Development
 
@@ -57,17 +54,15 @@ uv run pytest tests/ -v
 Example dry-run:
 
 ```sh
-STATE_PATH=.local/state.json \
 LOG_LEVEL=DEBUG \
 uv run gig-scout --dry-run --artist-limit 50
 ```
 
-Dry-run logs matching notifications and does not write state.
+Dry-run logs matching notifications without sending them.
 
 To send at most one notification during local testing:
 
 ```sh
-STATE_PATH=.local/state.json \
 uv run gig-scout --max-notifications 1
 ```
 
@@ -81,13 +76,11 @@ Build locally:
 docker build -f Containerfile -t navidrome-gig-scout:local .
 ```
 
-Run a dry-run with local state mounted to `/data`:
+Run a dry-run:
 
 ```sh
 docker run --rm \
   --env-file .env \
-  -e STATE_PATH=/data/state.json \
-  -v "$PWD/.local:/data" \
   navidrome-gig-scout:local \
   --dry-run --artist-limit 50
 ```

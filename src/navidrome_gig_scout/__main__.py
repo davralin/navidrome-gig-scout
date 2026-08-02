@@ -17,7 +17,7 @@ def parse_args() -> argparse.Namespace:
         description="Find nearby Ticketmaster concerts for Navidrome artists."
     )
     parser.add_argument(
-        "--dry-run", action="store_true", help="Log notifications and do not write state"
+        "--dry-run", action="store_true", help="Log notifications without sending them"
     )
     parser.add_argument(
         "--max-notifications", type=int, help="Maximum notifications to send this run"

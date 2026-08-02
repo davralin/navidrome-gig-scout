@@ -26,9 +26,7 @@ def test_load_config_parses_required_values() -> None:
     assert config.radius_miles == 100
     assert config.lookahead_days == 365
     assert config.apprise_urls == ("json://example.test/a", "json://example.test/b")
-    assert config.state_path.as_posix() == "/data/state.json"
     assert config.log_level == "INFO"
-    assert config.search_place == "51.5074,-0.1278"
 
 
 def test_load_config_reports_missing_values() -> None:

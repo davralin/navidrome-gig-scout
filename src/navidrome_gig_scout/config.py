@@ -4,7 +4,6 @@ import logging
 import os
 from collections.abc import Mapping
 from dataclasses import dataclass
-from pathlib import Path
 
 REQUIRED_ENV = (
     "NAVIDROME_URL",
@@ -30,9 +29,7 @@ class Config:
     radius_miles: int
     lookahead_days: int
     apprise_urls: tuple[str, ...]
-    state_path: Path
     log_level: str
-    search_place: str
 
 
 class ConfigError(ValueError):
@@ -74,7 +71,5 @@ def load_config(env: Mapping[str, str] | None = None) -> Config:
         radius_miles=radius_miles,
         lookahead_days=lookahead_days,
         apprise_urls=apprise_urls,
-        state_path=Path(values.get("STATE_PATH", "/data/state.json")),
         log_level=log_level,
-        search_place=values.get("SEARCH_PLACE", f"{values['GEO_LAT']},{values['GEO_LONG']}"),
     )

@@ -1,6 +1,10 @@
 from __future__ import annotations
 
-from navidrome_gig_scout.ticketmaster import parse_events
+from navidrome_gig_scout.ticketmaster import MIN_REQUEST_INTERVAL_SECONDS, parse_events
+
+
+def test_ticketmaster_request_interval_is_below_provider_limit() -> None:
+    assert MIN_REQUEST_INTERVAL_SECONDS == 1.0
 
 
 def test_parse_events_extracts_core_fields() -> None:

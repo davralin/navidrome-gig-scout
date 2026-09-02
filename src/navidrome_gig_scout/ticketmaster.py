@@ -9,7 +9,7 @@ import requests
 
 DISCOVERY_URL = "https://app.ticketmaster.com/discovery/v2/events.json"
 MAX_DAILY_REQUESTS = 5000
-MIN_REQUEST_INTERVAL_SECONDS = 0.2
+MIN_REQUEST_INTERVAL_SECONDS = 1.0
 
 
 @dataclass(frozen=True)

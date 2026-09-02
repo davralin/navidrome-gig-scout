@@ -93,5 +93,5 @@ Ticketmaster is queried once per artist with `classificationName=Music`, the con
 `latlong`, radius in miles, and a `startDateTime`/`endDateTime` window from now through
 `LOOKAHEAD_DAYS`.
 
-Requests are throttled to at most 5 per second. If the Navidrome artist count exceeds 5000,
+Requests are throttled to at most 1 per second. If the Navidrome artist count exceeds 5000,
 the run logs a warning and exits successfully without querying Ticketmaster.

@@ -99,3 +99,31 @@ def test_max_notifications_limits_sends() -> None:
     assert result.matches == 2
     assert result.notifications_sent == 1
     assert notifier.sent == 1
+
+
+def test_notifies_match_before_searching_next_artist() -> None:
+    cfg = config()
+    calls: list[str] = []
+
+    class TrackingNotifier:
+        def notify(self, notification: object) -> bool:
+            calls.append("notify")
+            return True
+
+    def search_events(artist: str) -> list[Event]:
+        calls.append(f"search:{artist}")
+        if artist == "Alestorm":
+            return [matching_event()]
+        return []
+
+    result = run_pipeline(
+        config=cfg,
+        artist_fetcher=lambda: ["Alestorm", "Blind Guardian"],
+        event_searcher=search_events,
+        notifier=TrackingNotifier(),  # type: ignore[arg-type]
+        dry_run=False,
+    )
+
+    assert result.matches == 1
+    assert result.notifications_sent == 1
+    assert calls == ["search:Alestorm", "notify", "search:Blind Guardian"]

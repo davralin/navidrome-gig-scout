@@ -56,29 +56,33 @@ def run_pipeline(
             skipped=True,
         )
 
-    matches: list[tuple[str, Event]] = []
+    matches = 0
+    notifications_sent = 0
     for artist in artists:
         events = event_searcher(artist)
         LOGGER.debug("%s: %d Ticketmaster events", artist, len(events))
         for event in events:
             if is_exact_artist_match(artist, event):
-                matches.append((artist, event))
-
-    notifications_sent = 0
-    for artist, event in matches:
-        notification = build_notification(artist, event)
-        LOGGER.info("Match: %s | %s | %s | %s", artist, event.venue, event.date, event.url)
-        if dry_run:
-            LOGGER.info("Dry run: would notify %r", notification.title)
-        elif notifier is not None and (
-            max_notifications is None or notifications_sent < max_notifications
-        ):
-            if notifier.notify(notification):
-                notifications_sent += 1
+                matches += 1
+                notification = build_notification(artist, event)
+                LOGGER.info(
+                    "Match: %s | %s | %s | %s",
+                    artist,
+                    event.venue,
+                    event.date,
+                    event.url,
+                )
+                if dry_run:
+                    LOGGER.info("Dry run: would notify %r", notification.title)
+                elif notifier is not None and (
+                    max_notifications is None or notifications_sent < max_notifications
+                ):
+                    if notifier.notify(notification):
+                        notifications_sent += 1
 
     result = RunResult(
         artists=len(artists),
-        matches=len(matches),
+        matches=matches,
         notifications_sent=notifications_sent,
     )
     LOGGER.info(
